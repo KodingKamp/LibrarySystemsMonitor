@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Library Systems Monitor</title>
+    <style>
+        :root {
+            --pagepad: 2em;
+            --box: 36px;
+            --computergap: .3em;
+            --aislegap: 1em;
+        }
+
+        body {
+            margin: 0;
+            background: black;
+            color: white;
+        }
+
+        header,
+        footer {
+            text-align: center;
+            padding: var(--pagepad);
+            background: black;
+        }
+
+        header {
+            padding-bottom: 15px;
+        }
+
+        #header-title {
+            font-size: 24px;
+        }
+        
+        aside {
+            width: 200px;
+            padding: 5px;
+        }
+
+        #aside-offline-container {
+            border: rgb(255, 96, 96) 3px solid;
+            background: rgb(255, 96, 96, 0.192);
+            float: left;
+            border-radius: 0 0 8px 0;
+        }
+
+        #aside-debug-menu {
+            border: rgb(101, 248, 101) 3px solid;
+            background: rgba(101, 248, 101, 0.192);
+            text-align: right;
+            float: right;
+            border-radius: 0 0 0 8px;
+        }
+
+        #offline-list {}
+        
+        #selected-station-field,
+        .lab-containers,
+        .computer{
+            border-radius: 8px;
+        }
+
+        main {
+            background: #777;
+        }
+
+        main>section {
+            padding: 1em 0;
+        }
+
+        #selected-station-container {
+            padding-bottom: 5px;
+        }
+        #selected-station-field {
+            font-size: 16px;
+            color: rgb(174, 226, 250);
+            background: rgb(87, 87, 87);
+            height: 1.5em;
+            margin-left: 20px;
+            padding: 0 5px;
+        }
+
+        .computer {
+            height: var(--box);
+            width: var(--box);
+            border: white solid 1px;
+            background: none;
+            color: white;
+        }
+
+        #labA-computers,
+        #labA-computers>section,
+        #labB-computers,
+        #labB-computers>section,
+        .squareLab,
+        .studyRoom,
+        .squareLab>section,
+        #kiosk-computers {
+            display: grid;
+            grid-template-rows: auto;
+        }
+
+        #labA-computers>section,
+        #labB-computers>section,
+        .squareLab,
+        .studyRoom,
+        .squareLab>section,
+        .studyRoom>button {
+            grid-gap: var(--computergap);
+        }
+
+        #section-container {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        #section-container>* {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        .lab-containers {
+            border: rgba(218, 218, 218, 0.37) 3px dashed;
+            padding: .5em;
+            text-align: center;
+            margin: 5px;
+        }
+
+        .lab-label {
+            margin-bottom: 1em;
+        }
+
+        #labA-computers {
+            grid-template-columns: repeat(3, auto);
+            grid-column-gap: var(--aislegap);
+        }
+
+        #labA-computers>section {
+            grid-template-columns: repeat(2, auto);
+        }
+
+        #labB-computers {
+            grid-template-columns: auto;
+            grid-row-gap: var(--aislegap);
+        }
+
+        #labB-computers>section {
+            grid-template-columns: repeat(4, auto);
+        }
+
+        .outerLeft {
+            grid-area: oLeft;
+        }
+
+        .outerRight {
+            grid-area: oRight;
+        }
+
+        .innerLeft {
+            grid-area: iLeft;
+        }
+
+        .innerRight {
+            grid-area: iRight;
+        }
+
+        .studyRoom {
+            grid-template-columns: repeat(2, auto);
+        }
+
+        .squareLab>section {
+            grid-template-columns: repeat(4, var(--box));
+            grid-template-areas:
+                "oLeft iLeft iRight oRight";
+        }
+
+        #kiosk-computers {
+            grid-template-columns: repeat(2, auto);
+            grid-column-gap: var(--computergap);
+            grid-row-gap: var(--aislegap);
+        }
+
+        .kiosk-left-section {
+            margin-left: auto;
+        }
+
+        .kiosk-right-section {
+            margin-right: auto;
+        }
+        
+        @media screen and (min-width: 1131px)
+        {
+            main {
+                
+            }
+        }
+
+        @media screen and (max-width: 1130px) and (min-width: 901px)
+        {
+            main{
+                background: green;
+            }
+        }
+
+        @media screen and (max-width: 900px)
+        {
+            main{
+                background: red;
+            }
+        }
+        
+    </style>
+    <script>
+        function selectComputer(computerID) {
+            let textField = document.getElementById("selected-station-field");
+            // Puts s
+            textField.value = computerID;
+            textField.select();
+            document.execCommand("copy");
+            textField.blur();
+            document.getElementById("copied-message").style.display = "inherit";
+        }
+    </script>
+</head>
+
+<body>
+    <header>
+        <span id="header-title">Library Systems Monitor (Chrome/Firefox)</span>
+    </header>
+    <main>
+        <aside id="aside-offline-container">
+            <label>Offline Stations:</label>
+            <section id="offline-list"></section>
+        </aside>
+        <aside id="aside-debug-menu">
+            <label>Debug Menu</label>
+            <section id="debug-commands"></section>
+        </aside>
+        <section id="section-container">
+            <span id="selected-station-container">
+                <label id="selected-station-title">Selected Station:</label>
+                <input id="selected-station-field" readonly="" type="text" placeholder="Click a station to copy.">
+                <label id="copied-message" style="margin-left: 20px; display: none;">Copied to clipboard!</label>
+            </span>
+            <section id="section-row-1">
+                <section class="lab-containers" id="labA-container">
+                    <label class="lab-label">Computer Lab A</label>
+                    <section id="labA-computers">
+                        <section id="labA-col-1">
+                            <button class="computer" id="labAStation004">4</button>
+                            <button class="computer" id="labAStation005">5</button>
+                            <button class="computer" id="labAStation003">3</button>
+                            <button class="computer" id="labAStation006">6</button>
+                            <button class="computer" id="labAStation002">2</button>
+                            <button class="computer" id="labAStation007">7</button>
+                            <button class="computer" id="labAStation001">1</button>
+                            <button class="computer" id="labAStation008">8</button>
+                        </section>
+                        <section id="labA-col-2">
+                            <button class="computer" id="labAStation012">12</button>
+                            <button class="computer" id="labAStation013">13</button>
+                            <button class="computer" id="labAStation011">11</button>
+                            <button class="computer" id="labAStation014">14</button>
+                            <button class="computer" id="labAStation010">10</button>
+                            <button class="computer" id="labAStation015">15</button>
+                            <button class="computer" id="labAStation009">9</button>
+                            <button class="computer" id="labAStation016">16</button>
+                        </section>
+                        <section id="labA-col-3">
+                            <button class="computer" id="labAStation020">20</button>
+                            <button class="computer" id="labAStation021">21</button>
+                            <button class="computer" id="labAStation019">19</button>
+                            <button class="computer" id="labAStation022">22</button>
+                            <button class="computer" id="labAStation018">18</button>
+                            <button class="computer" id="labAStation023">23</button>
+                            <button class="computer" id="labAStation017">17</button>
+                            <button class="computer" id="labAStation024">24</button>
+                        </section>
+                    </section>
+                </section>
+                <section class="lab-containers" id="study1-container">
+                    <label class="lab-label">Study<br>Room 1</label>
+                    <section class="studyRoom" id="study1-computers">
+                        <button class="computer" id="study1Station001">1</button>
+                        <button class="computer" id="study1Station002">2</button>
+                        <button class="computer" id="study1Station004">4</button>
+                        <button class="computer" id="study1Station003">3</button>
+                    </section>
+                </section>
+                <section class="lab-containers" id="study2-container">
+                    <label class="lab-label">Study<br>Room 2</label>
+                    <section class="studyRoom" id="study2-computers">
+                        <button class="computer" id="study2Station001">1</button>
+                        <button class="computer" id="study2Station002">2</button>
+                        <button class="computer" id="study2Station004">4</button>
+                        <button class="computer" id="study2Station003">3</button>
+                    </section>
+                </section>
+            </section>
+            <section id="section-row-2">
+                <section class="lab-containers" id="labB-container">
+                    <label class="lab-label">Computer Lab B</label>
+                    <section id="labB-computers">
+                        <section id="labB-row-1">
+                            <button class="computer" id="labBStation001">1</button>
+                            <button class="computer" id="labBStation002">2</button>
+                            <button class="computer" id="labBStation003">3</button>
+                            <button class="computer" id="labBStation004">4</button>
+                            <button class="computer" id="labBStation008">8</button>
+                            <button class="computer" id="labBStation007">7</button>
+                            <button class="computer" id="labBStation006">6</button>
+                            <button class="computer" id="labBStation005">5</button>
+                        </section>
+                        <section id="labB-row-2">
+                            <button class="computer" id="labBStation009">9</button>
+                            <button class="computer" id="labBStation010">10</button>
+                            <button class="computer" id="labBStation011">11</button>
+                            <button class="computer" id="labBStation012">12</button>
+                            <button class="computer" id="labBStation016">16</button>
+                            <button class="computer" id="labBStation015">15</button>
+                            <button class="computer" id="labBStation014">14</button>
+                            <button class="computer" id="labBStation013">13</button>
+                        </section>
+                        <section id="labB-row-3">
+                            <button class="computer" id="labBStation017">17</button>
+                            <button class="computer" id="labBStation018">18</button>
+                            <button class="computer" id="labBStation019">19</button>
+                            <button class="computer" id="labBStation020">20</button>
+                            <button class="computer" id="labBStation024">24</button>
+                            <button class="computer" id="labBStation023">23</button>
+                            <button class="computer" id="labBStation022">22</button>
+                            <button class="computer" id="labBStation021">21</button>
+                        </section>
+                    </section>
+                </section>
+                <section class="lab-containers" id="labC-container">
+                    <label class="lab-label">Computer Lab C</label>
+                    <section class="squareLab" id="labC-computers">
+                        <section id="labC-row-1">
+                            <button class="computer outerLeft" id="labCStation001">1</button>
+                            <button class="computer outerRight" id="labCStation010">10</button>
+                        </section>
+                        <section id="labC-row-2">
+                            <button class="computer outerLeft" id="labCStation002">2</button>
+                            <button class="computer outerRight" id="labCStation009">9</button>
+                        </section>
+                        <section id="labC-row-3">
+                            <button class="computer outerLeft" id="labCStation003">3</button>
+                            <button class="computer outerRight" id="labCStation008">8</button>
+                        </section>
+                        <section id="labC-row-4">
+                            <button class="computer outerLeft" id="labCStation004">4</button>
+                            <button class="computer outerRight" id="labCStation007">7</button>
+                        </section>
+                        <section id="labC-row-5">
+                            <button class="computer innerLeft" id="labCStation005">5</button>
+                            <button class="computer innerRight" id="labCStation006">6</button>
+                        </section>
+                    </section>
+                </section>
+                <section class="lab-containers" id="labD-container">
+                    <label class="lab-label">Computer Lab D</label>
+                    <section class="squareLab" id="labD-computers">
+                        <section id="labD-row-1">
+                            <button class="computer outerLeft" id="labDStation001">1</button>
+                            <button class="computer outerRight" id="labDStation012">12</button>
+                        </section>
+                        <section id="labD-row-2">
+                            <button class="computer outerLeft" id="labDStation002">2</button>
+                            <button class="computer outerRight" id="labDStation011">11</button>
+                        </section>
+                        <section id="labD-row-3">
+                            <button class="computer outerLeft" id="labDStation003">3</button>
+                            <button class="computer outerRight" id="labDStation010">10</button>
+                        </section>
+                        <section id="labD-row-4">
+                            <button class="computer outerLeft" id="labDStation004">4</button>
+                            <button class="computer outerRight" id="labDStation009">9</button>
+                        </section>
+                        <section id="labD-row-5">
+                            <button class="computer outerLeft" id="labDStation005">5</button>
+                            <button class="computer innerLeft" id="labDStation006">6</button>
+                            <button class="computer innerRight" id="labDStation007">7</button>
+                            <button class="computer outerRight" id="labDStation008">8</button>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section id="section-row-3">
+                <section class="lab-containers" id="kiosk-container">
+                    <label class="lab-label">Kiosk Station</label>
+                    <section id="kiosk-computers">
+                        <section class="kiosk-quadrant kiosk-left-section">
+                            <button class="computer" id="kioskStation001">1</button>
+                            <button class="computer" id="kioskStation002">2</button>
+                            <button class="computer" id="kioskStation003">3</button>
+                            <button class="computer" id="kioskStation004">4</button>
+                            <button class="computer" id="kioskStation005">5</button>
+                        </section>
+                        <section class="kiosk-quadrant kiosk-right-section">
+                            <button class="computer" id="kioskStation006">6</button>
+                            <button class="computer" id="kioskStation007">7</button>
+                            <button class="computer" id="kioskStation008">8</button>
+                            <button class="computer" id="kioskStation009">9</button>
+                            <button class="computer" id="kioskStation010">10</button>
+                        </section>
+                        <section class="kiosk-quadrant kiosk-left-section">
+                            <button class="computer" id="kioskStation018">18</button>
+                            <button class="computer" id="kioskStation017">17</button>
+                            <button class="computer" id="kioskStation016">16</button>
+                            <button class="computer" id="kioskStation015">15</button>
+                        </section>
+                        <section class="kiosk-quadrant kiosk-right-section">
+                            <button class="computer" id="kioskStation014">14</button>
+                            <button class="computer" id="kioskStation013">13</button>
+                            <button class="computer" id="kioskStation012">12</button>
+                            <button class="computer" id="kioskStation011">11</button>
+                        </section>
+                    </section>
+                </section>
+            </section>
+        </section>
+    </main>
+    <footer>2019 KodingKamp</footer>
+    <script>
+        window.onload = () => {
+            let computers = document.getElementsByClassName("computer");
+            for (i = 0; i < computers.length; i++) {
+                computers[i].setAttribute("onclick", "selectComputer(this.id)");
+                computers[i].setAttribute("title", computers[i].id);
+            };
+        }
+    </script>
+</body>
+
+</html>
