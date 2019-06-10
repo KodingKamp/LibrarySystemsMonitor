@@ -24,10 +24,10 @@ this provides the user with the phyical location of the offline computer relativ
 Users are able to click on a computer station in the map to highlight and selected it. Selecting a computer would display it's hostname in the Selected Station field above the labs maps and automatically copy that hostname to the clipboard, for easy pasting into reports. Only the most recently selected computer's hostname will display in the field but multiple computers can be selected to be highlighted. Selections can also be made from the Offline list; in the event of multiple computers going offline, this can be used to single out one station amoung all the red stations. Stations can be deselected by right-clicking on the computer in the map or by clicking the "Clear selected" button in the debug menu.
 
 
-//<ul>
-//      <li>clear the map of all selected stations,</li>
-//      <li>clear the map of all offline stations,</li> 
-//      <li>start a timer that will set a random computer as "Offline" every 3 seconds,</li>
-//      <li>stop the timer if it is started, and</li>
-//      <li>randomly set 5 or 10 or all of the available stations as "Offline"</li>     
-//    </ul>
+<ul>
+      <li>clear the map of all selected stations,</li>
+      <li>clear the map of all offline stations,</li> 
+      <li>start a timer that will set a random computer as "Offline" every 3 seconds,</li>
+      <li>stop the timer if it is started, and</li>
+      <li>randomly set 5 or 10 or all of the available stations as "Offline"</li>     
+    </ul>
