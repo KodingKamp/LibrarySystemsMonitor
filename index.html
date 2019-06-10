@@ -66,6 +66,9 @@
         #debug-commands>label {
             display: block;
         }
+        #debug-commands>button {
+            margin: 5px 0;
+        }
 
         #selected-station-field,
         .lab-containers,
@@ -229,16 +232,19 @@
         
         @media screen and (min-width: 1131px)
         {
-        }
-
-        @media screen and (max-width: 1130px) and (min-width: 1006px)
-        {
-            main{
-                background: green;
+            main {
+                
             }
         }
 
-        @media screen and (max-width: 1005px)
+        @media screen and (max-width: 1130px) and (min-width: 1030px)
+        {
+            main{
+
+            }
+        }
+
+        @media screen and (max-width: 1029px)
         {
             main{
                 background: red;
@@ -297,7 +303,8 @@
                 let computers = document.getElementsByClassName("computer");
                 for (let i = 0; i < stations.length; i++) {
                     if (!computers[i].classList.contains("offline")) {
-                        offlineList.innerHTML += "<li onclick='selectComputer(this.innerText)'>" + computers[i].id + "</li>";
+                        offlineList.innerHTML += "<li onclick='selectComputer(this.innerText)' oncontextmenu='deselectComputer(" 
+                        + '"' + computer.id + '"' + "); return false;'>" + computers[i].id + "</li>";
                         computers[i].classList.add("offline");
                     }
                 };
@@ -309,7 +316,8 @@
                         i--;
                         continue;
                     }
-                    offlineList.innerHTML += "<li onclick='selectComputer(this.innerText)'>" + computer.id + "</li>";
+                    offlineList.innerHTML += "<li onclick='selectComputer(this.innerText)' oncontextmenu='deselectComputer(" 
+                            + '"' + computer.id + '"' + "); return false;'>" + computer.id + "</li>";
                     computer.classList.add("offline");
                 }
             }
@@ -343,11 +351,18 @@
 
         var timer;
 
-        function startTimer() {
-            timer = setInterval(() => {offlineComputers(1);}, 3000);
+        function startTimer(thisButton) {
+            thisButton.setAttribute("onclick", "stopTimer(this)");
+            thisButton.innerText = "Stop Timer";
+            clearComputerHighlight("offline");
+            offlineComputers(1);
+            setTimeout(() => {stopTimer(thisButton); }, 32000)
+            timer = setInterval(() => {offlineComputers(1); }, 3000);
         }
 
-        function stopTimer() {
+        function stopTimer(thisButton) {
+            thisButton.setAttribute("onclick", "startTimer(this)");
+            thisButton.innerText = "Start Timer";
             clearInterval(timer);
         }
     </script>
@@ -355,30 +370,30 @@
 
 <body>
     <header>
-        <span id="header-title">Library Systems Monitor (Chrome/Firefox)</span>
+        <span id="header-title">Library Systems Monitor Companion Web App (Chrome/Firefox)</span>
     </header>
     <main>
         <aside id="aside-offline-container">
             <label>Offline Stations:</label>
+            <hr>
             <ul id="offline-list"></ul>
         </aside>
         <aside id="aside-debug-menu">
             <label>Debug Menu</label>
+            <hr>
             <section id="debug-commands">
+                <label>Clear all selected stations</label>
+                <button onClick="clearComputerHighlight('selected')">Clear Selected</button>
+                <label>Clear all offline stations</label>
+                <button onClick="clearComputerHighlight('offline')">Clear Offline</button>
+                <label>Timer: offline every 3 secs.</label>
+                <button onClick="startTimer(this)">Start Timer</button>
                 <label>Set random N stations offline</label>
                 <button onClick="offlineComputers(5)">5</button>
                 <button onClick="offlineComputers(10)">10</button>
                 <button onClick="offlineComputers(-1)">All Offline</button>
-                <label>Clear all offline stations</label>
-                <button onClick="clearComputerHighlight('offline')">Clear Offline</button>
                 <label>Set all computers as selected</label>
                 <button onClick="selectAllComputers()">Select All Computers</button>
-                <label>Clear all selected stations</label>
-                <button onClick="clearComputerHighlight('selected')">Clear Selected</button>
-                <label>Timer: offline every 3 secs.</label>
-                <button onClick="startTimer()">Start Timer</button>
-                <label>Stop Timer</label>
-                <button onClick="stopTimer()">Stop Timer</button>
             </section>
         </aside>
         <section id="section-container">
