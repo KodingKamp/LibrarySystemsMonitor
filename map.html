@@ -33,6 +33,10 @@
             font-size: 24px;
         }
         
+        footer {
+            bottom: 0;
+        }
+
         aside {
             width: 200px;
             padding: 5px;
@@ -43,6 +47,12 @@
             background: rgb(255, 96, 96, 0.192);
             float: left;
             border-radius: 0 0 8px 0;
+            position: sticky;
+        }
+
+        #offline-list {
+            max-height: 500px;
+            overflow-y: auto;
         }
 
         #aside-debug-menu {
@@ -52,9 +62,11 @@
             float: right;
             border-radius: 0 0 0 8px;
         }
-
-        #offline-list {}
         
+        #debug-commands>label {
+            display: block;
+        }
+
         #selected-station-field,
         .lab-containers,
         .computer{
@@ -62,7 +74,7 @@
         }
 
         main {
-            background: #777;
+            background: rgb(3, 93, 121);
         }
 
         main>section {
@@ -87,15 +99,39 @@
             border: white solid 1px;
             background: none;
             color: white;
+            font-size: 15px;
+        }
+
+        .computer:hover {
+            border-width: 2px;    
+        }
+
+        .computer:active {
+            border-color: rgb(181, 173, 255);
+        }
+
+        .computer:focus {
+
+        }
+
+        .offline {
+            border-width: 3px;
+            border-color: rgba(253, 40, 40, 0.7);
+            background: rgba(253, 40, 40, 0.507);
+        }
+
+        .selected {
+            background: rgba(174, 226, 250, 0.808);
+            color: black;
         }
 
         #labA-computers,
         #labA-computers>section,
         #labB-computers,
         #labB-computers>section,
-        .squareLab,
+        .roundLab,
         .studyRoom,
-        .squareLab>section,
+        .roundLab>section,
         #kiosk-computers {
             display: grid;
             grid-template-rows: auto;
@@ -103,9 +139,9 @@
 
         #labA-computers>section,
         #labB-computers>section,
-        .squareLab,
+        .roundLab,
         .studyRoom,
-        .squareLab>section,
+        .roundLab>section,
         .studyRoom>button {
             grid-gap: var(--computergap);
         }
@@ -130,7 +166,7 @@
         }
 
         .lab-label {
-            margin-bottom: 1em;
+
         }
 
         #labA-computers {
@@ -171,7 +207,7 @@
             grid-template-columns: repeat(2, auto);
         }
 
-        .squareLab>section {
+        .roundLab>section {
             grid-template-columns: repeat(4, var(--box));
             grid-template-areas:
                 "oLeft iLeft iRight oRight";
@@ -213,15 +249,109 @@
         }
         
     </style>
-    <script>
+
+    <script type="text/javascript">
+        const stations = ["labAStation001", "labAStation002", "labAStation003",
+            "labAStation004", "labAStation005", "labAStation006", "labAStation007",
+            "labAStation008", "labAStation009", "labAStation010", "labAStation011",
+            "labAStation012", "labAStation013", "labAStation014", "labAStation015",
+            "labAStation016", "labAStation017", "labAStation018", "labAStation019",
+            "labAStation020", "labAStation021", "labAStation022", "labAStation023",
+            "labAStation024", "labBStation001", "labBStation002", "labBStation003",
+            "labBStation004", "labBStation005", "labBStation006", "labBStation007",
+            "labBStation008", "labBStation009", "labBStation010", "labBStation011",
+            "labBStation012", "labBStation013", "labBStation014", "labBStation015",
+            "labBStation016", "labBStation017", "labBStation018", "labBStation019",
+            "labBStation020", "labBStation021", "labBStation022", "labBStation023",
+            "labBStation024", "labCStation001", "labCStation002", "labCStation003",
+            "labCStation004", "labCStation005", "labCStation006", "labCStation007",
+            "labCStation008", "labCStation009", "labCStation010", "labDStation001",
+            "labDStation002", "labDStation003", "labDStation004", "labDStation005",
+            "labDStation006", "labDStation007", "labDStation008", "labDStation009",
+            "labDStation010", "labDStation011", "labDStation012", "kioskStation001",
+            "kioskStation002", "kioskStation003", "kioskStation004", "kioskStation005",
+            "kioskStation006", "kioskStation007", "kioskStation008", "kioskStation009",
+            "kioskStation010", "kioskStation011", "kioskStation012", "kioskStation013",
+            "kioskStation014", "kioskStation015", "kioskStation016", "kioskStation017",
+            "kioskStation018", "study1Station001", "study1Station002", "study1Station003",
+            "study1Station004", "study2Station001", "study2Station002", "study2Station003",
+            "study2Station004"];
+
         function selectComputer(computerID) {
+            document.getElementById(computerID).classList.add('selected');
             let textField = document.getElementById("selected-station-field");
-            // Puts s
             textField.value = computerID;
             textField.select();
             document.execCommand("copy");
             textField.blur();
             document.getElementById("copied-message").style.display = "inherit";
+        }
+
+        function deselectComputer(computerID) {
+            document.getElementById(computerID).classList.remove('selected');
+        }
+
+        /**
+         * Debug menu functions
+        */
+        function offlineComputers(n) {
+            let offlineList = document.getElementById("offline-list");
+            if (n === -1) {
+                let computers = document.getElementsByClassName("computer");
+                for (let i = 0; i < stations.length; i++) {
+                    if (!computers[i].classList.contains("offline")) {
+                        offlineList.innerHTML += "<li onclick='selectComputer(this.innerText)'>" + computers[i].id + "</li>";
+                        computers[i].classList.add("offline");
+                    }
+                };
+            } else {
+                for (let i = 0; i < n; i++) {
+                    let number = Math.floor(Math.random() * stations.length);
+                    let computer = document.getElementById(stations[number]);
+                    if (computer.classList.contains("offline")) {
+                        i--;
+                        continue;
+                    }
+                    offlineList.innerHTML += "<li onclick='selectComputer(this.innerText)'>" + computer.id + "</li>";
+                    computer.classList.add("offline");
+                }
+            }
+        }
+
+        function selectAllComputers() {
+            let computers = document.getElementsByClassName("computer");
+            for (let i = 0; i < computers.length; i++) {
+                if (!computers[i].classList.contains("selected"))
+                    computers[i].classList.add("selected");
+            }
+        }
+
+        // The highlight parameter would be either "offline" or "selected" to
+        // handle both types of highlighting clearing in one method.
+        function clearComputerHighlight(highlight) {
+            let computers = document.getElementsByClassName("computer");
+            for (let i = 0; i < computers.length; i++) {
+                computers[i].classList.remove(highlight);
+            }
+
+            if (highlight === "offline") {
+                document.getElementById("offline-list").innerText = "";
+            }
+
+            if (highlight === "selected") {
+                document.getElementById("selected-station-field").value = "";
+                document.getElementById("copied-message").style.display = "none";
+            }
+        }
+
+        var timer;
+
+        function startTimer() {
+            timer = setInterval(() => {offlineComputers(1);}, 3000);
+        }
+
+        function stopTimer() {
+            clearInterval(timer);
         }
     </script>
 </head>
@@ -233,11 +363,26 @@
     <main>
         <aside id="aside-offline-container">
             <label>Offline Stations:</label>
-            <section id="offline-list"></section>
+            <ul id="offline-list"></ul>
         </aside>
         <aside id="aside-debug-menu">
             <label>Debug Menu</label>
-            <section id="debug-commands"></section>
+            <section id="debug-commands">
+                <label>Set random N stations offline</label>
+                <button onClick="offlineComputers(5)">5</button>
+                <button onClick="offlineComputers(10)">10</button>
+                <button onClick="offlineComputers(-1)">All Offline</button>
+                <label>Clear all offline stations</label>
+                <button onClick="clearComputerHighlight('offline')">Clear Offline</button>
+                <label>Set all computers as selected</label>
+                <button onClick="selectAllComputers()">Select All Computers</button>
+                <label>Clear all selected stations</label>
+                <button onClick="clearComputerHighlight('selected')">Clear Selected</button>
+                <label>Timer: offline every 3 secs.</label>
+                <button onClick="startTimer()">Start Timer</button>
+                <label>Stop Timer</label>
+                <button onClick="stopTimer()">Stop Timer</button>
+            </section>
         </aside>
         <section id="section-container">
             <span id="selected-station-container">
@@ -338,10 +483,10 @@
                 </section>
                 <section class="lab-containers" id="labC-container">
                     <label class="lab-label">Computer Lab C</label>
-                    <section class="squareLab" id="labC-computers">
+                    <section class="roundLab" id="labC-computers">
                         <section id="labC-row-1">
-                            <button class="computer outerLeft" id="labCStation001">1</button>
-                            <button class="computer outerRight" id="labCStation010">10</button>
+                            <button class="computer innerLeft" id="labCStation001">1</button>
+                            <button class="computer innerRight" id="labCStation010">10</button>
                         </section>
                         <section id="labC-row-2">
                             <button class="computer outerLeft" id="labCStation002">2</button>
@@ -363,7 +508,7 @@
                 </section>
                 <section class="lab-containers" id="labD-container">
                     <label class="lab-label">Computer Lab D</label>
-                    <section class="squareLab" id="labD-computers">
+                    <section class="roundLab" id="labD-computers">
                         <section id="labD-row-1">
                             <button class="computer outerLeft" id="labDStation001">1</button>
                             <button class="computer outerRight" id="labDStation012">12</button>
@@ -425,12 +570,13 @@
         </section>
     </main>
     <footer>2019 KodingKamp</footer>
-    <script>
+    <script type="text/javascript" async="">
         window.onload = () => {
             let computers = document.getElementsByClassName("computer");
             for (i = 0; i < computers.length; i++) {
                 computers[i].setAttribute("onclick", "selectComputer(this.id)");
                 computers[i].setAttribute("title", computers[i].id);
+                computers[i].setAttribute("oncontextmenu", "deselectComputer(this.id); return false;");
             };
         }
     </script>
