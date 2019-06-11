@@ -1,4 +1,4 @@
-# LibrarySystemsMonitorCompanionWebApplication
+# LibrarySystemsMonitorCompanionApplication
 This project is a stripped-down verison of an application I built at work and primarily works in browsers that are updated to be compatible with HTML5 and CSS3. Tested and verified only in Chrome and Firefox.
 <h2>Description</h2>
 This web application is a companion app to the computer monitoring system that detects the statuses of the computer stations in each computer lab where I work. When a computer is detected as "offline" by the monitoring system, this application adds that computer's hostname to the list of offline computers and then highlights on the map which computer station it is. 
