@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Library Systems Monitor Companion App</title>
+    <title>Library Systems Monitor</title>
     <style>
         :root {
             --pagepad: 2em;
@@ -304,7 +304,7 @@
                 for (let i = 0; i < stations.length; i++) {
                     if (!computers[i].classList.contains("offline")) {
                         offlineList.innerHTML += "<li onclick='selectComputer(this.innerText)' oncontextmenu='deselectComputer(" 
-                        + '"' + computer.id + '"' + "); return false;'>" + computers[i].id + "</li>";
+                        + '"' + computers[i].id + '"' + "); return false;'>" + computers[i].id + "</li>";
                         computers[i].classList.add("offline");
                     }
                 };
@@ -370,7 +370,7 @@
 
 <body>
     <header>
-        <span id="header-title">Library Systems Monitor Companion App (Chrome/Firefox)</span>
+        <span id="header-title">Library Systems Monitor Companion Web App (Chrome/Firefox)</span>
     </header>
     <main>
         <aside id="aside-offline-container">
