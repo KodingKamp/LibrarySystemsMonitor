@@ -309,11 +309,18 @@
                     }
                 };
             } else {
+                let breakCount = 0;
                 for (let i = 0; i < n; i++) {
                     let number = Math.floor(Math.random() * stations.length);
-                    let computer = document.getElementById(stations[number]);
+                    let computer = document.getElementById(stations[number]);                    
                     if (computer.classList.contains("offline")) {
                         i--;
+                        breakCount++;
+                        console.log(breakCount);
+                        if (breakCount >= 1000) {
+                            console.log("broke");
+                            break;
+                        }
                         continue;
                     }
                     offlineList.innerHTML += "<li onclick='selectComputer(this.innerText)' oncontextmenu='deselectComputer(" 
